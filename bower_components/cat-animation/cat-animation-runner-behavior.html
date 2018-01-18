@@ -1,0 +1,78 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+
+
+window.CatBehaviors = window.CatBehaviors || {};
+/** @polymerBehavior */
+CatBehaviors.CatAnimationRunnerBehavior = {
+
+	properties: {
+		_animations: {
+			value: function() {
+			    return {};
+			}
+		},
+	},
+
+	addAnimation: function(name, config) {
+		if (!this._animations[name]) {
+			this._animations[name] = [];
+		}
+		
+		var catAnimation = document.createElement(config.name);
+		
+		if (catAnimation.initConfig) {
+			catAnimation.initConfig(config);
+			config.catAnimation = catAnimation;
+		} else {
+			console.warn('There is no animation with this name: "' + config.name + '"');
+		}
+		
+		config.self = this;
+		this._animations[name].push(config);
+
+		return catAnimation;
+	},
+
+	clearAnimation: function(name) {
+		this._animations[name] = [];
+		this._animations[name].length = 0;
+		
+	},
+
+	_applyStyles: function(name, functionName) {
+		var nameArray = this._animations[name];
+		if (nameArray) {
+			for (var i = 0, len = nameArray.length; i < len; i++) {
+				if (nameArray[i].catAnimation && typeof nameArray[i].catAnimation[functionName] === 'function') {
+					nameArray[i].catAnimation[functionName]();
+				}
+			}
+		}
+	},
+
+	initAnimation: function(name) {
+		this._applyStyles(name, 'startStyles');
+	},
+
+	play: function(name) {
+		this._applyStyles(name, 'startStyles');
+		var self = this;
+		setTimeout(function() {
+			self._applyStyles(name, 'endStyles');
+			self._applyStyles(name, 'doneFunctions');
+		}, 30);
+	},
+
+	reverse: function(name) {
+		var self = this;
+		setTimeout(function() {
+			self._applyStyles(name, 'reverseStyles');
+		}, 60);
+	}
+	
+
+};
+
+</script>

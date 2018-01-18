@@ -1,0 +1,64 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<link rel="import" href="../cat-decorator-behavior.html">
+
+<script>
+
+	Polymer({
+
+		is: 'cat-shadow',
+
+		behaviors: [CatBehaviors.CatDecoratorBehavior],
+
+		properties: {
+			_defaults : {
+				value: {
+					horizontalWidth: 2,
+					verticalWidth: 2,
+					blur: 10,
+					spread: 0,
+					color: '#000',
+					inset: false,
+					double: false
+				}
+			},
+			_restrictions: {
+				value: {
+					horizontalWidth: 'number',
+					verticalWidth: 'number',
+					blur: 'number',
+					spread: 'number',
+					color: 'color',
+					inset: 'boolean',
+					double: 'boolean'
+				}
+			}
+		},
+
+		_customInit: function() {
+			var shadowString = this._config.horizontalWidth + 'px ' +
+				this._config.verticalWidth + 'px ' +
+				this._config.blur + 'px ' +
+				this._config.spread + 'px ' +
+				this._config.color + 
+				(this._config.inset ? ' inset' : '');
+
+			if (this._config.double) {
+				shadowString += ', ' +
+					(- this._config.horizontalWidth) + 'px ' +
+					(- this._config.verticalWidth) + 'px ' +
+					this._config.blur + 'px ' +
+					this._config.spread + 'px ' +
+					this._config.color + 
+					(this._config.inset ? ' inset' : '');
+
+			}
+
+			this._config.node.style.boxShadow = shadowString;
+
+		}
+		
+
+	});
+
+</script>

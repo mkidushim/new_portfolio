@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+	<title>cat-image</title>
+
+	<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+
+	<link rel="import" href="../cat-image.html">
+	<link rel="import" href="../../cat-text/cat-text.html">
+	<link rel="import" href="../../cat-config-panel/cat-config-panel.html">
+	
+	<style>
+		body {
+			padding-top: 20px !important;
+		}
+	    cat-image {
+	    	margin-left: 30px;
+	    	margin-left: auto;
+			margin-right: auto;
+	    }
+	    cat-image cat-text {
+	    	display: none;
+	    }
+	</style>
+
+</head>
+<body>
+
+	<!-- 
+		http://webcomponents.online/img.jpg
+		http://lorempixel.com/640/340/
+		https://placeimg.com/640/480/any
+		http://placehold.it/1000x700
+		https://unsplash.it/200/300
+	 -->
+
+	<cat-config-panel source-file="../cat-image.json"></cat-config-panel>
+
+
+	<script src="../../cat-config-panel/connecter.js"></script>
+
+	<script>
+		var includes =
+		'<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"><\/script>\n' + 
+		'<link rel="import" href="bower_components/cat-image/cat-image.html">\n' +
+		'<link rel="import" href="bower_components/cat-text/cat-text.html">\n',
+
+			componentName = 'cat-image',
+			
+			styleObj = {
+				'cat-text': {
+					backgroundColor: 'rgba(255, 255, 230, 0.7)',
+			    	borderRadius: 4,
+		            padding: 10,
+		            color: 'rgba(0, 0, 255, 1)',
+			    	fontFamily: 'Open Sans',
+			    	fontWeight: 300,
+			    	fontSize: 22
+				},
+				'cat-image': {
+					width: 700,
+	    			height: 300
+				}
+			},
+			
+			componentString = 
+			'<cat-image src="http://webcomponents.online/img.jpg">\n' +
+			'    <cat-text>Sample text</cat-text>\n' +
+			'    <cat-text>Second sample text</cat-text>\n' +
+			'    <cat-text>Third sample text</cat-text>\n' +
+			'</cat-image>';
+
+		connectComponentWithConfigPanel(componentName, styleObj, componentString, includes);
+
+	</script>
+
+</body>
+</html>

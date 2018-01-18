@@ -1,0 +1,466 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../cat-animation/cat-animation-runner-behavior.html">
+<link rel="import" href="../cat-animation/animations/cat-zoom-animation.html">
+
+<link rel="import" href="../cat-decorators/cat-decorator-runner-behavior.html">
+<link rel="import" href="../cat-decorators/decorators/cat-position.html">
+<link rel="import" href="../cat-decorators/decorators/cat-border.html">
+<link rel="import" href="../cat-decorators/decorators/cat-shadow.html">
+
+<link rel="import" href="../cat-utils/cat-visibility-check.html">
+
+<link rel="import" href="../cat-preloaders/cat-spinbox-preloader.html">
+
+<!--
+`<cat-image>` element displays an image with different possible effects: Ken Burns (zoom
+effect) and text appearance effects. The text is displayed via `<cat-text>` element.
+
+
+@demo demo/index.html
+-->
+<dom-module id="cat-image">
+<style>
+    :host {
+        display: block;
+        position: relative;        
+        overflow: hidden;
+    }  
+    #img {
+        height: 100%;
+        position: relative;
+    }
+    #brdr {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+    }
+
+</style>
+
+<template>
+    <div id="preloader" class="cat-spinbox-preloader"></div>
+    <div id="img"></div>
+    <div id="txt"></div>
+    <div id="brdr"></div>
+</template>
+
+<script>
+
+(function(){
+
+'use strict';
+
+function dashedLowercase(str) {
+    return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+
+Polymer({      
+
+    is: 'cat-image',
+
+    behaviors: [
+        CatBehaviors.CatAnimationRunnerBehavior,
+        CatBehaviors.CatDecoratorRunnerBehavior
+    ],
+
+    properties: {
+        /**
+         * The image URL
+         */
+        src:                    { type: String, value: ''},
+        /**
+         * Available options: fade, slide, scale (or combined, space delimited), none
+         */
+        textTransitionType:     { type: String, value: 'scale' },
+        /**
+         * Available options: random, center, left, right, top, bottom. 'center' is unavailable for textTransitionType: slide
+         */
+        textTransitionDirection: { type: String, value: 'center' },
+        /**
+         * Easing function. Available options: ease, linear, ease-in, ease-out, ease-in-out
+         */
+        textTransitionFunction: { type: String, value: 'ease' },
+        /**
+         * Easing duration, in seconds
+         */
+        textTransitionDuration: { type: Number, value: 1 },
+        /**
+         * Transition delay, in seconds
+         */
+        textTransitionDelay:    { type: Number, value: 0 },
+        /**
+         * Delay (in seconds) between multiple text appearances
+         */
+        delayInBetween:    { type: Number, value: 0.3 },
+        /**
+         * Distance in percentage for slide effect.
+         * Available only for Transition type: slide
+         */
+        slideOffset:            { type: Number, value: 100 },
+        /**
+         * Enable this in order to show the effects only when the mouse is over the image
+         */
+        showEffectsOnHover:     { type: Boolean, value: false },
+        /**
+         * Disable the photo effect that makes the image to slowly zoom
+         */
+        disableKenBurns:        { type: Boolean, value: false },
+        /**
+         * Zoom direction. Available options: in, out
+         */
+        kenBurnsZoomDirection:  { type: String, value: 'out' },
+        /**
+         * Ken Burns transition duration in seconds
+         */
+        transitionDuration:     { type: Number, value: 6 },
+        /**
+         * Ken Burns transition delay in seconds
+         */
+        transitionDelay:        { type: Number, value: 0 },
+        /**
+         * Point of origin for Ken Burns Effect. Available options:
+         * random, center, top-left, top-right, bottom-left, bottom-right
+         */
+        zoomOrigin:             { type: String, value: 'random' },
+        /**
+         * Zoom percentage for Ken Burns
+         */
+        zoomScale:              { type: Number, value: 10 },
+        /**
+         * Show image border
+         */
+        useImageBorder:         { type: Boolean, value: false},
+        /**
+         * Width of the border in pixels
+         */
+        imageBorderWidth:       { type: Number, value: 2},
+        /**
+         * Which sides to apply the border to. Available options: all, top, right, bottom, left
+         */
+        imageBorderSides:       { type: String, value: 'all'},
+        /**
+         * Radius of the border in pixels
+         */
+        imageBorderRadius:      { type: Number, value: 0},
+        /**
+         * Color of the border. RGB(A) or HEX
+         */
+        imageBorderColor:       { type: String, value: 'rgba(119, 119, 119, 1)'},
+        /**
+         * Whether the border is outside or inside the image
+         */
+        borderOutsideImage:     { type: Boolean, value: false},
+        /**
+         * Show image shadow
+         */
+        useImageShadow:         { type: Boolean, value: false},
+        /**
+        * The width of the horizontal shadow
+        */       
+        horizontalShadowWidth:  { type: Number, value: 0},
+        /**
+         * The width of the vertical shadow
+         */
+        verticalShadowWidth:    { type: Number, value: 0},
+        /**
+         * The blur of the shadow
+         */
+        shadowBlur:             { type: Number, value: 10},
+        /**
+         * The spread of the shadow
+         */
+        shadowSpread:           { type: Number, value: 0},
+        /**
+         * The color of the shadow
+         */
+        shadowColor:            { type: String, value: 'rgba(0, 0, 0, 1)'},
+        /**
+         * Whether the shadow is inside or outside the image
+         */
+        shadowInset:            { type: Boolean, value: false},
+        /**
+         * Double the shadow both vertically and horizontally
+         */
+        useDoubleShadow:       { type: Boolean, value: false},
+        /**
+         * Text padding in pixels
+         */
+        textPadding:            { type: Number, value: 20 },
+        /**
+         * The horizontal position of the text.
+         * Available options: random, center, left, right
+         */
+        horizontalTextPosition: { type: String, value: 'random' },
+        /**
+         * The vertical position of the text.
+         * Available options: random, center, top, bottom
+         */
+        verticalTextPosition:   { type: String, value: 'random' },
+        /**
+         * Space between cat-text elements
+         */
+        textSpacing:            { type: Number, value: 10},
+        
+        /**
+         * Set this to true if you want to manually control when cat-text is shown or hidden (via showText() and hideText())
+         */
+        manualMode:             { type: Boolean, value: false },
+        
+        mouseIsOver:             { type: Boolean, value: false }
+    },
+
+    // !!!
+    // it could be a problem having properties declared like this (they may be shared across multiple instances)
+    _lightDom: [],
+
+    // using a temp image to trigger a callback when the image is loaded
+    _tempImg: document.createElement('img'),
+
+    _isImageLoaded: false,
+
+    CatTextProperties: [
+        'transitionType:textTransitionType',
+        'transitionDirection:textTransitionDirection',
+        'transitionFunction:textTransitionFunction',
+        'transitionDuration:textTransitionDuration',
+        'transitionDelay:textTransitionDelay',
+        'slideOffset'
+    ],
+
+    // apply the bundled properties
+    // unless there are individual properties defined for a specific cat-text element
+    _getOriginal:function(str) {
+        if (str.indexOf(':') !== -1) {
+            return str.slice(0, str.indexOf(':'));
+        } else {
+            return str;
+        }
+    },
+    _getSpecific: function(str) {
+        if (str.indexOf(':') !== -1) {
+            return str.slice(str.indexOf(':') + 1, str.length);
+        } else {
+            return str;
+        }
+    },
+    _applyBundledProperties: function(el, PropertiesArray) {
+        var i, len, original, specific, dashedOriginal;
+        for (i = 0, len = PropertiesArray.length; i < len; i++) {
+            original = this._getOriginal(PropertiesArray[i]);
+            specific = this._getSpecific(PropertiesArray[i]);
+            dashedOriginal = dashedLowercase(original);
+            if (! el.hasAttribute(dashedOriginal) && this[specific] !== false) {
+                el.setAttribute(dashedOriginal, this[specific]);
+            }
+        }
+    },
+
+    _setImageAsBackground: function() {
+        
+        if (parseInt(getComputedStyle(this).height) === 0) {
+            this.style.height = '300px';
+        }
+
+        this.$.img.style.background = "url('" + this.src +"') no-repeat center center";
+        this.$.img.style.backgroundSize = 'cover';                
+        
+        this._tempImg.setAttribute('src', this.src);        
+    },
+
+    _onImageLoaded: function(callback, scope) {
+        var self = this;
+
+        if (this._isImageLoaded) {
+            callback.call(scope);
+        } else {
+            this._tempImg.addEventListener('load', loaded);
+        }
+
+        function loaded() {
+            self._tempImg.removeEventListener('load', loaded);
+            self._isImageLoaded = true;
+            callback.call(scope);
+        }
+
+    },
+
+    _errorHandling: function() {        
+        if (this.kenBurnsZoomDirection !== 'in') {
+            this.kenBurnsZoomDirection = 'out';
+        }
+    },
+
+    _applyTextTransitionDelay: function(el) {
+        if (! el.hasAttribute('transition-delay')) {
+            el.setAttribute('transition-delay', this.textTransitionDelay + this.delayInBetween * this.transitionDelayCount);
+            this.transitionDelayCount++;
+        }
+    },
+
+    _appendTextChildren: function() {
+        //append cat-text child elements to #txt div
+        this._lightDom = Polymer.dom(this).children;
+        this.transitionDelayCount = 0;
+
+        for (var i = 0; i < this._lightDom.length; i++) {
+            var paragraph = document.createElement('p');
+            this._applyTextTransitionDelay(this._lightDom[i]);
+            this._applyBundledProperties(this._lightDom[i], this.CatTextProperties);
+            this._lightDom[i].setAttribute('manual-mode', '');
+            paragraph.appendChild(this._lightDom[i]);
+            Polymer.dom(this.$.txt).appendChild(paragraph);
+        }
+    },
+
+    _unifyTextDirection: function() {
+        if (this.textTransitionDirection === 'random') {
+            this.textTransitionDirection = ['center', 'left', 'right', 'top', 'bottom'][Math.floor(Math.random() * 5)];
+        }
+    },
+
+    _attachListeners: function() {
+        if (this.showEffectsOnHover) {
+            this.listen(this, 'mouseenter', '_onMouseEnter');
+            this.listen(this, 'mouseleave', '_onMouseLeave');
+        }
+    },
+
+    _initialStyleSetup: function() {
+
+        if (!this.disableKenBurns) {
+
+            this.addAnimation('zoom-' + this.kenBurnsZoomDirection, {
+                name: 'cat-zoom-animation',
+                node: this.$.img,                    
+                zoom: this.kenBurnsZoomDirection,
+                scale: this.zoomScale,
+                origin: this.zoomOrigin,
+                function: this.transitionFunction,
+                duration: this.transitionDuration,
+                delay: this.transitionDelay
+            });
+
+            if (this.kenBurnsZoomDirection === 'out') {
+                this.initAnimation('zoom-' + this.kenBurnsZoomDirection);
+            }
+
+        }
+
+        this.addDecorator({
+            name: 'cat-position',
+            node: this.$.txt,
+            horizontal: this.horizontalTextPosition,
+            vertical: this.verticalTextPosition,
+            padding: this.textPadding
+        });
+
+        if (this.useImageBorder) {
+            this.addDecorator({
+                name: 'cat-border',
+                node: (this.borderOutsideImage ? this : this.$.brdr),
+                color: this.imageBorderColor,
+                width: this.imageBorderWidth,
+                side: this.imageBorderSides,
+                radius: this.imageBorderRadius
+            });
+        }
+
+        if (this.useImageShadow) {
+            this.addDecorator({
+                name: 'cat-shadow',
+                node: (this.shadowInset ? this.$.brdr : this),
+                horizontalWidth: this.horizontalShadowWidth,
+                verticalWidth: this.verticalShadowWidth,
+                blur: this.shadowBlur,
+                spread: this.shadowSpread,
+                color: this.shadowColor,
+                inset: this.shadowInset,
+                double: this.useDoubleShadow
+            });
+        }
+
+        //set margins to paragraphs that contain cat-text elements according to textSpacing value
+        var paragraphs = Polymer.dom(this.$.txt).querySelectorAll('p');
+        for (var i = 0, len = paragraphs.length; i < len; i++) {
+            paragraphs[i].style.margin = this.textSpacing + 'px' + ' 0';
+        }
+        paragraphs[0].style.marginTop = '0';
+        paragraphs[paragraphs.length - 1].style.marginBottom = '0';
+
+    },
+
+    showKenBurns: function() {            
+            this.play('zoom-' + this.kenBurnsZoomDirection);
+    },
+    hideKenBurns: function() {
+            this.reverse('zoom-' + this.kenBurnsZoomDirection);
+    },
+
+    showInfoText: function() {
+        for (var i = 0; i < this._lightDom.length; i++) {
+            this._lightDom[i].fire('show');
+        }
+    },
+    hideInfoText: function() {
+        for (var i = 0; i < this._lightDom.length; i++) {
+            this._lightDom[i].fire('hide');
+        }
+    },
+
+    _onMouseEnter: function() {
+        this.mouseIsOver = true;
+
+        if (this._isImageLoaded) {
+            this.showInfoText();
+            this.showKenBurns();
+        }
+    },
+    _onMouseLeave: function() {
+        this.mouseIsOver = false;
+
+        if (this._isImageLoaded) {
+            this.hideInfoText();
+            this.hideKenBurns();
+        }
+    },
+
+    attached: function() {
+        this._errorHandling();
+        this._setImageAsBackground();
+        this._unifyTextDirection();
+        this._appendTextChildren();
+        this._attachListeners();
+        this._initialStyleSetup();
+            
+        if (!this.showEffectsOnHover) {
+            if (!this.manualMode) {
+                this._onImageLoaded(function() {
+                    onVisibleOnce(this, function() {
+                        this.showInfoText();
+                        if (!this.disableKenBurns) {
+                            this.showKenBurns();
+                        }
+                    }, this);
+                }, this);
+            }
+        } else {
+            this._onImageLoaded(function() {
+                if (this.mouseIsOver) {
+                    this.showInfoText();
+                    if (!this.disableKenBurns) {
+                        this.showKenBurns();
+                    }
+                }
+            }, this);
+        }
+    
+    }
+});
+
+})();
+</script>
+
+</dom-module>

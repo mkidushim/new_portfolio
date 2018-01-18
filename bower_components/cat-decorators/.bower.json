@@ -1,0 +1,44 @@
+{
+  "name": "cat-decorators",
+  "version": "0.8.2",
+  "description": "Helper element that allows you to decorate Polymer elements",
+  "authors": [
+    "Catalin Ungureanu <catalinungureanu@gmail.com>"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "position",
+    "positioning",
+    "border",
+    "shadow"
+  ],
+  "main": "cat-decorator-runner-behavior.html",
+  "license": "MIT",
+  "homepage": "https://github.com/the-catalin/cat-decorators",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.2.5",
+    "web-component-tester": "^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "_release": "0.8.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.8.2",
+    "commit": "322a5433e5b0dd9f103dedc9ce6c8f02f2772340"
+  },
+  "_source": "https://github.com/the-catalin/cat-decorators.git",
+  "_target": "^0.8.1",
+  "_originalSource": "the-catalin/cat-decorators"
+}

@@ -1,0 +1,49 @@
+{
+  "name": "cat-image",
+  "version": "0.8.6",
+  "description": "Displays an image with different possible effects",
+  "authors": [
+    "Catalin Ungureanu <catalinungureanu@gmail.com>"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "image",
+    "ken burns",
+    "text",
+    "effect"
+  ],
+  "main": "cat-image.html",
+  "license": "MIT",
+  "homepage": "https://github.com/the-catalin/cat-image",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.0",
+    "cat-text": "the-catalin/cat-text#^0.7.1",
+    "cat-animation": "the-catalin/cat-animation#^0.8.5",
+    "cat-decorators": "the-catalin/cat-decorators#^0.8.1",
+    "cat-utils": "the-catalin/cat-utils#^0.8.0",
+    "cat-preloaders": "the-catalin/cat-preloaders#^0.1.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.2.5",
+    "web-component-tester": "^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "_release": "0.8.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.8.6",
+    "commit": "171b81117a6c1c4f643908d8131400fd7bc2347c"
+  },
+  "_source": "https://github.com/the-catalin/cat-image.git",
+  "_target": "^0.8.4",
+  "_originalSource": "the-catalin/cat-image"
+}

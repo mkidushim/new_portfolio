@@ -1,0 +1,44 @@
+{
+  "name": "cat-text",
+  "version": "0.7.4",
+  "description": "Displays text with a transition effect",
+  "authors": [
+    "Catalin Ungureanu <catalinungureanu@gmail.com>"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "text",
+    "effect"
+  ],
+  "main": "cat-text.html",
+  "license": "MIT",
+  "homepage": "https://github.com/the-catalin/cat-text",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.0",
+    "cat-animation": "the-catalin/cat-animation#^0.8.5",
+    "cat-utils": "the-catalin/cat-utils#^0.8.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.2.5",
+    "web-component-tester": "^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "_release": "0.7.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.7.4",
+    "commit": "3bf452fdd2894da71738d8405e7c6769d3f86e87"
+  },
+  "_source": "https://github.com/the-catalin/cat-text.git",
+  "_target": "^0.7.1",
+  "_originalSource": "the-catalin/cat-text"
+}

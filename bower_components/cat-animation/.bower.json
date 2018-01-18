@@ -1,0 +1,41 @@
+{
+  "name": "cat-animation",
+  "version": "0.8.7",
+  "description": "Add animation to your Polymer elements",
+  "authors": [
+    "Catalin Ungureanu <catalinungureanu@gmail.com>"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "animation"
+  ],
+  "main": "cat-animation-runner-behavior.html",
+  "license": "MIT",
+  "homepage": "https://github.com/the-catalin/cat-animation",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.2.5",
+    "web-component-tester": "^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "_release": "0.8.7",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.8.7",
+    "commit": "b02c85fb04ac449c4d410c72aa9fe75c5e9b212c"
+  },
+  "_source": "https://github.com/the-catalin/cat-animation.git",
+  "_target": "^0.8.7",
+  "_originalSource": "the-catalin/cat-animation"
+}
