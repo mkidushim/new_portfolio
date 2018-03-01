@@ -473,6 +473,3 @@ button.btn.btn-close{
     max-height: 300px;
   }
 }
-.carousel-control-next,.carousel-control-prev{
-  background-color: rgba(0,0,0,.2);
-}
